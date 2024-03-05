@@ -139,10 +139,8 @@ def lançar():
     excel_file_path = "Planilha Padrão CCT Impo Aéreo.xlsx"
     book = openpyxl.load_workbook(excel_file_path)
 
-    # Acessar a segunda sheet ('2. Cadastro (XFZB + XFHL)')
+   
     sheet = book['2. Cadastro (XFZB + XFHL)']
-
-    # Supondo que você quer adicionar a lista a partir da linha 5
     row_index = 5
     for house in selected_waybills:  
         GetTransRange = f"""<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
@@ -162,8 +160,6 @@ def lançar():
       
 
         GT_Data = response_GT.text
-    
-        # Analise o XML da resposta
         root_GT = ET.fromstring(GT_Data)
     
         trans_xml = root_GT.find('.//trans_xml').text
@@ -239,7 +235,7 @@ def lançar():
         if response_Master.status_code != 200:
             print("Falha:", response_Master.status_code)
 
-        # Process the response for the Master request
+       
         Master_Data = response_Master.text
         root_Master = ET.fromstring(Master_Data)
         trans_xmlm = root_Master.find('.//trans_xml').text
@@ -249,8 +245,6 @@ def lançar():
         MasterPieces = internal_root_wrm.find('.//{http://www.magaya.com/XMLSchema/V1}TotalPieces').text
         MasterWeight = internal_root_wrm.find('.//{http://www.magaya.com/XMLSchema/V1}TotalWeight').text
         MasterWeight = float(MasterWeight)
-
-# Formatando o número para manter apenas o inteiro e as duas primeiras casas decimais
         MasterWeight = "{:.2f}".format(MasterWeight)
         lista = ['C', shipment_number, origin, Destin, shipment_pieces, ttalweigtht, pp, cget, sum, PesoCubado, PesoCobrança, 'VKG', DESC, moedaprepaid, totalprepaid, moedacollect, totalcollect, CNPJAgente, consignee_name, cneerua, cneecity, cnecontrycode, cneeZipcode, shipper_name, Shipperrua, Shippercity, shippercountrycode, Shipperzipcode, Aduacode, Master, MasterWeight, MasterPieces, origin, Destin ]
         for col_index, value in enumerate(lista, start=1):
@@ -258,15 +252,15 @@ def lançar():
         row_index += 1
 
 
-    # Salvar as alterações no arquivo Excel
+    
     book.save(excel_file_path)
 
-# Criando a janela
+
 root = tk.Tk()
 root.title("Upload de Planilha")
 root.geometry("650x380")  # Ajuste a largura da janela
 
-# Adicionando um Frame para centralizar a Treeview com padding à esquerda
+
 frame = ttk.Frame(root, padding=(10, 0, 0, 0))  # Adiciona 1 cm de padding à esquerda
 frame.grid(row=1, column=0, pady=(20, 0), sticky="nsew")
 tree = ttk.Treeview(frame, columns=("Master Waybill", "Waybill Number", "Controle CCT"), show="headings", selectmode="extended")
@@ -274,13 +268,12 @@ tree.heading("Master Waybill", text="Master Waybill")
 tree.heading("Waybill Number", text="Waybill Number")
 tree.heading("Controle CCT", text="Status")
 
-# Configurando o estilo para centralizar os itens
+
 style = ttk.Style()
 style.configure("Treeview.Heading", anchor="center")
 style.configure("Treeview", rowheight=25)
 style.configure("Treeview.Treeitem", padding=(0, 0, 0, 0))  # Remover o espaço entre as células
 
-# Adicionando uma linha vertical separando as colunas
 tree.column("#0", stretch=tk.NO, width=1)
 tree.column("Master Waybill", anchor="center", width=200)  # Ajuste a largura da coluna
 tree.column("Waybill Number", anchor="center", width=200)  # Ajuste a largura da coluna
@@ -288,19 +281,15 @@ tree.column("Controle CCT", anchor="center", width=200)   # Ajuste a largura da 
 
 tree.grid(row=0, column=0, pady=(0, 0), sticky="nsew")
 
-# Adicionando uma barra de rolagem
 scrollbar = ttk.Scrollbar(frame, command=tree.yview)
 scrollbar.grid(row=0, column=1, pady=(0, 0), sticky='ns')
 tree.configure(yscrollcommand=scrollbar.set)
 
-# Adicionando evento de duplo clique
+
 tree.bind("<Double-1>", on_double_click)
-# Adicionando evento de clique direito
 tree.bind("<Button-3>", on_right_click)
 
 create_buttons()
-
-# Ajuste para centralizar verticalmente e horizontalmente a Treeview
 frame.grid_rowconfigure(0, weight=1)
 frame.grid_columnconfigure(0, weight=1)
 
