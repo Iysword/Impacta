@@ -95,15 +95,14 @@ def create_buttons():
     counter_label = tk.Label(root, text="Selecionados: 0")
     counter_label.grid(row=2, column=0, pady=(10, 0), sticky="n", padx=(0, 0))
 
-    # Criando o menu de contexto
     menu = tk.Menu(root, tearoff=0)
     menu.add_command(label="Selecionar Mesmo Master Waybill", command=select_same_master_waybill)
 
     store_button = tk.Button(root, text="Lançar", command=lançar)
     store_button.grid(row=0, column=0, pady=(10, 0), sticky="e", padx=(10, 0))
 
-    selected_waybills = []  # Initialize the selected_waybills list
-############################################################################################################################################################################################################################################################################# 
+    selected_waybills = []  
+
 selected_waybills = []
 
 
@@ -130,7 +129,7 @@ def lançar():
 
     response_SS = requests.post(url, data=StartSession, headers=headers)
     if response_SS.status_code == 200:
-        # Analisar a resposta XML
+        
         root = ET.fromstring(response_SS.text)
         key = root.find(".//access_key").text
         access_key = key
